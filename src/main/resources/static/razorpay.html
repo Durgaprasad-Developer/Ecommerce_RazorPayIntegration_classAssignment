@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Razorpay Checkout</h2>
+
+Order ID: <input id="orderId"><br><br>
+
+<button onclick="pay()">Pay Now</button>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+
+async function pay() {
+
+    let orderId = document.getElementById("orderId").value;
+
+    let res = await fetch('/razorpay/create', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ orderId })
+    });
+
+    let order = await res.json();
+
+    let options = {
+        "key": "rzp_test_thbnstH0Bq80hy",
+        "amount": order.amount,
+        "currency": "INR",
+        "name": "Ecommerce",
+        "order_id": order.id,
+        "callback_url": "/razorpay/callback"
+    };
+
+    let rzp = new Razorpay(options);
+    rzp.open();
+}
+
+</script>
+
+</body>
+</html>
